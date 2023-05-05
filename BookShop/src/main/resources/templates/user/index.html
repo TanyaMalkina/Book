@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Главная страница</title>
+
+</head>
+<body>
+<form method="post" action="/logout">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <button type="submit">Выйти из личного кабинета</button>
+</form>
+<br>
+<form method="get" th:action="@{/cart}">
+    <button type="submit">Корзина</button>
+</form>
+<br>
+<form method="get" th:action="@{/orders}">
+    <input type="submit" value="Мои заказы">
+</form>
+<br>
+<h2>Личный кабинет </h2>
+<h3>Сортировка, поиск, фильтрация</h3>
+<form th:method="POST" th:action="@{/person_account/product/search}">
+    <fieldset>
+       <legend>
+           Выберите параметры
+       </legend>
+        <label for="search">Поиск по наименованию</label>
+        <input type="text" id="search" name="search" th:value="*{value_search}">
+        <br>
+        <p>Цена, P</p>
+        <label for="ot">От</label>
+        <input type="text" name="ot" id="ot" th:value="*{value_price_ot}">
+        <label for="do">До</label>
+        <input type="text" name="do" id="do" th:value="*{value_price_do}">
+        <br>
+        <div>
+            <input type="radio" id="ascending_price" name="price" value="sorted_by_ascending_price">
+            <label for="ascending_price">Отсортировать по возрастанию цены</label>
+            <input type="radio" id="descending_price" name="price" value="sorted_by_descending_price">
+            <label for="descending_price">Отсортировать по убыванию цены</label>
+            <p>Жанр книг: </p>
+            <input type="radio" id="fantasy" name="contract" value="fantasy">
+            <label for="fantasy">Фентази</label>
+            <input type="radio" id="training" name="contract" value="training">
+            <label for="training">Обучающая литература</label>
+            <input type="radio" id="classic" name="contract" value="classic">
+            <label for="classic">Классическая литература</label>
+            <input type="radio" id="psychology" name="contract" value="psychology">
+            <label for="psychology">Психология</label>
+            <br>
+            <br>
+            <input type="submit" value="Найти">
+        </div>
+    </fieldset>
+</form>
+<hr>
+<h3>Результат поиска, cортировки, фильтрации</h3>
+<div th:each="product : ${search_product}">
+    <img th:src="'/img/' + ${product.imageList[0].getFileName()}" width="300px">
+    <br>
+    <a th:href="@{/product/info/{id}(id=${product.getId()})}" th:text="${product.getTitle()}"></a>
+    <p th:text="'Цена: ' + ${product.getPrice()}"></p>
+    <hr>
+</div>
+<hr>
+<h3>Доступные товары: </h3>
+<div th:each="product : ${product}">
+    <img th:src="'/img/' + ${product.imageList[0].getFileName()}" width="300px">
+    <br>
+    <a th:href="@{/product/info/{id}(id=${product.getId()})}" th:text="${product.getTitle()}"></a>
+    <p th:text="'Цена: ' + ${product.getPrice()}"></p>
+    <a th:href="@{/cart/add/{id}(id=${product.getId()})}">Добавить товар в корзину</a>
+    <hr>
+</div>
+</body>
+</html>
